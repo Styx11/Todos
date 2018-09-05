@@ -12,7 +12,10 @@
       v-for="item in todos"
       :key="item.id"
     >
-      <div class="todo-content">{{item.id}}. {{item.todo}}</div>
+      <div class="todo-content" @mouseover="item.show = true" @mouseout="item.show = false">
+          {{item.id}}. {{item.todo}}
+          <span class="iconfont close" v-show="item.show">&#xe731;</span>
+      </div>
     </div>
   </div>
 </template>
@@ -29,7 +32,7 @@ export default {
   },
   methods: {
     addTodo: function () {
-      this.todos.push({id: this.id++, todo: this.todo})
+      this.todos.push({id: this.id++, todo: this.todo, show: false})
       this.todo = ''
       console.log(this.todos)
     }
@@ -57,12 +60,20 @@ export default {
       border-radius .3rem
       outline none
     .todo-content
+      position relative
       display inline-block
       width 40rem
       line-height 3.5rem
       padding 0 1rem
+      margin 0 0
       font-size 2rem
       text-align left
       color #515a6e
       background-color #fff
+      .close
+        position absolute
+        top 0
+        right 1rem
+        font-size 1.5rem
+        color rgb(179, 179, 179)
 </style>
