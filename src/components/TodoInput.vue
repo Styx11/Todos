@@ -7,15 +7,24 @@
       @keyup.enter="addTodo"
       placeholder="What needs to be done?"
     >
-    <div
-      class="todo"
-      v-for="(item, index) in todos"
-      :key="item.id"
-    >
-      <div class="todo-content" @mouseover="item.show = true" @mouseout="item.show = false">
-          {{index + 1}}. {{item.todo}}
-          <span class="iconfont close" v-show="item.show" @click="todoDel">&#xe731;</span>
+    <div class="todo">
+      <transition-group
+        tag="div"
+        name="custom-classes-transition"
+        enter-active-class="animated fadeInDown"
+        leave-active-class="animated fadeOutUp"
+      >
+      <div
+        class="todo-content animated fadeInDown"
+        v-for="(item, index) in todos"
+        :key="index"
+        @mouseover="item.show = true"
+        @mouseout="item.show = false"
+      >
+        {{index + 1}}. {{item.todo}}
+        <span class="iconfont close" v-show="item.show" @click="todoDel">&#xe731;</span>
       </div>
+      </transition-group>
     </div>
   </div>
 </template>
@@ -32,8 +41,10 @@ export default {
   },
   methods: {
     addTodo: function () {
-      this.todos.push({id: this.id++, todo: this.todo, show: false})
-      this.todo = ''
+      if (this.todo) {
+        this.todos.push({id: this.id++, todo: this.todo, show: false})
+        this.todo = ''
+      }
     },
     todoDel: function () {
       let todoList = []
@@ -84,7 +95,6 @@ export default {
       outline none
     .todo
       position relative
-      box-shadow:10px 4px 10px #ccc
       .todo-content
         position relative
         display inline-block
