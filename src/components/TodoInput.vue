@@ -9,12 +9,12 @@
     >
     <div
       class="todo"
-      v-for="item in todos"
+      v-for="(item, index) in todos"
       :key="item.id"
     >
       <div class="todo-content" @mouseover="item.show = true" @mouseout="item.show = false">
-          {{item.id}}. {{item.todo}}
-          <span class="iconfont close" v-show="item.show">&#xe731;</span>
+          {{index + 1}}. {{item.todo}}
+          <span class="iconfont close" v-show="item.show" @click="todoDel">&#xe731;</span>
       </div>
     </div>
   </div>
@@ -34,7 +34,29 @@ export default {
     addTodo: function () {
       this.todos.push({id: this.id++, todo: this.todo, show: false})
       this.todo = ''
-      console.log(this.todos)
+    },
+    todoDel: function () {
+      let todoList = []
+      this.todos.forEach(function (item) {
+        if (!item.show) {
+          todoList.push(item)
+        }
+      })
+      this.todos = todoList
+    }
+  },
+  watch: {
+    todos: function () {
+      if (localStorage) {
+        let todoStr = JSON.stringify(this.todos)
+        localStorage.setItem('todos', todoStr)
+      }
+    }
+  },
+  mounted: function () {
+    if (localStorage.getItem('todos')) {
+      let todoList = localStorage.getItem('todos')
+      this.todos = JSON.parse(todoList)
     }
   }
 }
@@ -47,10 +69,11 @@ export default {
     margin 0 auto
     text-align center
     top 10rem
+    width 40rem
     .todo-input
       display inline-block
-      width 40rem
       line-height 3.5rem
+      width 100%
       padding 0 1rem
       font-size 2rem
       color #515a6e
@@ -59,21 +82,25 @@ export default {
       border-bottom 1px solid #ccc
       border-radius .3rem
       outline none
-    .todo-content
+    .todo
       position relative
-      display inline-block
-      width 40rem
-      line-height 3.5rem
-      padding 0 1rem
-      margin 0 0
-      font-size 2rem
-      text-align left
-      color #515a6e
-      background-color #fff
-      .close
-        position absolute
-        top 0
-        right 1rem
-        font-size 1.5rem
-        color rgb(179, 179, 179)
+      box-shadow:10px 4px 10px #ccc
+      .todo-content
+        position relative
+        display inline-block
+        width 100%
+        line-height 3.5rem
+        padding 0 1rem
+        margin 0 0
+        font-size 2rem
+        text-align left
+        color #515a6e
+        background-color #fff
+        .close
+          cursor pointer
+          position absolute
+          top 0
+          right 1rem
+          font-size 1.5rem
+          color rgb(179, 179, 179)
 </style>
