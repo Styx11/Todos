@@ -10,14 +10,16 @@
     <div class="todo" :style="{'backgroundColor': this.bgColor}">
       <transition-group
         tag="div"
+        class="content"
         name="custom-classes-transition"
         enter-active-class="animated fadeInDown"
         leave-active-class="animated fadeOutUp"
       >
       <div
-        class="todo-content"
         v-for="(item, index) in todos"
         :key="index"
+        class="todo-content"
+        :ref="index"
         @mouseover="item.show = true"
         @mouseout="item.show = false"
       >
@@ -38,11 +40,7 @@ export default {
     return {
       id: 1,
       todo: '',
-      todos: [],
-      scrollbar: {
-      fade: true,
-      interactive: false
-      }
+      todos: []
     }
   },
   methods: {
@@ -80,7 +78,6 @@ export default {
   },
   mounted: function () {
     this.scroll = new BScroll('.todo', {scrollbar: {fade: true}})
-    this.scroll.scrollbar = this.scrollbar
     if (localStorage.getItem('todos')) {
       let todoList = localStorage.getItem('todos')
       this.todos = JSON.parse(todoList)
@@ -90,6 +87,9 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+  .todos >>> .bscroll-vertical-scrollbar
+    top 57px !important
+    right -32px !important
   .todos
     z-index 91
     position relative
@@ -115,7 +115,7 @@ export default {
       overflow hidden
       .todo-content
         position relative
-        width 100%
+        width 96.5%
         line-height 3.5rem
         padding 0 1rem
         font-size 2rem
