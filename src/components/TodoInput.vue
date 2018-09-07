@@ -19,11 +19,17 @@
         v-for="(item, index) in todos"
         :key="index"
         class="todo-content"
-        :ref="index"
+        :id="'todo-' + index"
         @mouseover="item.show = true"
         @mouseout="item.show = false"
       >
-        {{index + 1}}. {{item.todo}}
+        <span
+          v-if="item.done"
+          class="iconfont done animated fadeIn"
+          @click="item.done = false"
+        >&#xe660;</span>
+        <span v-else class="iconfont undone" @click="item.done = true">&#xe660;</span>
+        {{item.todo}}
         <span class="iconfont close" v-show="item.show" @click="todoDel">&#xe731;</span>
       </div>
       </transition-group>
@@ -46,7 +52,7 @@ export default {
   methods: {
     addTodo: function () {
       if (this.todo) {
-        this.todos.push({id: this.id++, todo: this.todo, show: false})
+        this.todos.push({id: this.id++, todo: this.todo, show: false, done: false})
         this.todo = ''
       }
     },
@@ -66,7 +72,11 @@ export default {
         let todoStr = JSON.stringify(this.todos)
         localStorage.setItem('todos', todoStr)
       }
-      this.scroll.refresh()
+      if (this.todos.length >= 10) {
+        //let el = '#todo-' + (this.todos.length % 10)
+        this.scroll.refresh()
+        //this.scroll.scrollToElement(el, 500)
+      }
     }
   },
   computed: {
@@ -81,6 +91,10 @@ export default {
     if (localStorage.getItem('todos')) {
       let todoList = localStorage.getItem('todos')
       this.todos = JSON.parse(todoList)
+      // if (this.todos.length >= 10) {
+      //   let el = '#todo-' + (this.todos.length % 10)
+      //   this.scroll.scrollToElement(el, 500)
+      // }
     }
   }
 }
@@ -122,6 +136,14 @@ export default {
         text-align left
         color #515a6e
         background-color #fff
+        .done
+          cursor pointer
+          font-size 1.6rem
+          color rgb(100, 200, 87)
+        .undone
+          cursor pointer
+          font-size 1.6rem
+          color rgb(179, 179, 179)
         .close
           cursor pointer
           position absolute
