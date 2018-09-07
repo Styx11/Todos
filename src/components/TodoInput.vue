@@ -7,7 +7,7 @@
       @keyup.enter="addTodo"
       placeholder="What needs to be done?"
     >
-    <div class="todo">
+    <div class="todo" :style="{'backgroundColor': this.bgColor}">
       <transition-group
         tag="div"
         name="custom-classes-transition"
@@ -15,7 +15,7 @@
         leave-active-class="animated fadeOutUp"
       >
       <div
-        class="todo-content animated fadeInDown"
+        class="todo-content"
         v-for="(item, index) in todos"
         :key="index"
         @mouseover="item.show = true"
@@ -30,13 +30,19 @@
 </template>
 
 <script>
+import BScroll from 'better-scroll'
+
 export default {
   name: 'TodoInput',
   data: function () {
     return {
       id: 1,
       todo: '',
-      todos: []
+      todos: [],
+      scrollbar: {
+      fade: true,
+      interactive: false
+      }
     }
   },
   methods: {
@@ -62,9 +68,19 @@ export default {
         let todoStr = JSON.stringify(this.todos)
         localStorage.setItem('todos', todoStr)
       }
+      this.scroll.refresh()
+    }
+  },
+  computed: {
+    bgColor: function () {
+      return this.todos.length >= 10
+        ? '#fff'
+        : 'none'
     }
   },
   mounted: function () {
+    this.scroll = new BScroll('.todo', {scrollbar: {fade: true}})
+    this.scroll.scrollbar = this.scrollbar
     if (localStorage.getItem('todos')) {
       let todoList = localStorage.getItem('todos')
       this.todos = JSON.parse(todoList)
@@ -75,7 +91,7 @@ export default {
 
 <style lang="stylus" scoped>
   .todos
-    z-index 99
+    z-index 91
     position relative
     margin 0 auto
     text-align center
@@ -94,14 +110,14 @@ export default {
       border-radius .3rem
       outline none
     .todo
-      position relative
+      width 672px
+      height 560px
+      overflow hidden
       .todo-content
         position relative
-        display inline-block
         width 100%
         line-height 3.5rem
         padding 0 1rem
-        margin 0 0
         font-size 2rem
         text-align left
         color #515a6e
@@ -113,4 +129,6 @@ export default {
           right 1rem
           font-size 1.5rem
           color rgb(179, 179, 179)
+        .close:hover
+          color #515a6e
 </style>
