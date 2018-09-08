@@ -10,6 +10,7 @@ import '@/assets/styles/border.css'
 
 Vue.config.productionTip = false
 fastclick.attach(document.body)
+Vue.prototype.bus = new Vue()
 
 /* eslint-disable no-new */
 new Vue({

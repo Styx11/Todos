@@ -4,10 +4,10 @@
       class="todo-input"
       type="text"
       v-model="todo"
-      @keyup.enter="addTodo"
+      v-on:keyup.enter="addTodo"
       placeholder="What needs to be done?"
     >
-    <div class="todo" :style="{'backgroundColor': this.bgColor}">
+    <div class="todo">
       <transition-group
         tag="div"
         class="content"
@@ -17,32 +17,36 @@
       >
       <div
         v-for="item in todos"
-        :key="item.id"
+        v-bind:key="item.id"
         class="todo-content"
-        @mouseover="item.show = true"
-        @mouseout="item.show = false"
+        v-on:mouseover="item.show = true"
+        v-on:mouseout="item.show = false"
       >
         <span
           v-if="item.done"
           class="iconfont done animated fadeIn"
-          @click="item.done = false"
+          v-on:click='item.done = false'
         >&#xe660;</span>
         <span
           v-if="item.show && !item.done"
           class="iconfont undone"
-          @click="item.done = true"
+          v-on:click="item.done = true"
         >&#xe660;</span>
         <span class="content">{{item.todo}}</span>
-        <span class="iconfont close" v-show="item.show" @click="todoDel">&#xe731;</span>
+        <span class="iconfont close" v-show="item.show" v-on:click="todoDel">&#xe731;</span>
       </div>
       </transition-group>
+    </div>
+    <div class="todo-footer">
+      <span class="todo-left">
+        <span class="left">{{ todoItems }}</span> item(s) left
+      </span>
     </div>
   </div>
 </template>
 
 <script>
 import BScroll from 'better-scroll'
-
 export default {
   name: 'TodoInput',
   data: function () {
@@ -77,16 +81,20 @@ export default {
         let todoStr = JSON.stringify(this.todos)
         localStorage.setItem('todos', todoStr)
       }
-      if (this.todos.length >= 10) {
+      if (this.todos.length >= 9) {
         this.scroll.refresh()
       }
     }
   },
   computed: {
-    bgColor: function () {
-      return this.todos.length >= 10
-        ? '#fff'
-        : 'none'
+    todoItems: function () {
+      let items = 0
+      this.todos.forEach(function (item) {
+        if (!item.done) {
+          items++
+        }
+      })
+      return items
     }
   },
   mounted: function () {
@@ -124,7 +132,8 @@ export default {
       outline none
     .todo
       width 672px
-      height 560px
+      max-height 504px
+      background-color #fff
       overflow hidden
       .todo-content
         position relative
@@ -156,5 +165,23 @@ export default {
           font-size 1.5rem
           color rgb(179, 179, 179)
         .close:hover
+          color #515a6e
+    .todo-footer
+      width 672px
+      height 3rem
+      margin 0 auto
+      text-align center
+      position relative
+      background-color #fff
+      color rgb(179, 179, 179)
+      box-shadow:4px 4px 10px #ccc
+      border-bottom-left-radius .3rem
+      border-bottom-right-radius .3rem
+      border-top 1px solid rgb(179, 179, 179)
+      .todo-left
+        position absolute
+        top .8rem
+        left 1rem
+        .left
           color #515a6e
 </style>

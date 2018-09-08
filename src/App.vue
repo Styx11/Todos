@@ -8,7 +8,6 @@
 <script>
 import BackGround from './components/BackGround.vue'
 import TodoInput from './components/TodoInput.vue'
-
 export default {
   name: 'App',
   components: {
@@ -17,7 +16,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

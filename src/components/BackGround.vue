@@ -2,7 +2,7 @@
   <div class="bg">
     <div class="bgTitle">Todos</div>
     <div class="bgImg">
-      <img src="https://bing.ioliu.cn/v1" class="bgImg" :style="{height: height + 'px'}">
+      <img src="https://bing.ioliu.cn/v1" class="bgImg" v-bind:style="{height: height + 'px'}"/>
     </div>
   </div>
 </template>
