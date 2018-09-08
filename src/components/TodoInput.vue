@@ -19,7 +19,6 @@
         v-for="(item, index) in todos"
         :key="index"
         class="todo-content"
-        :id="'todo-' + index"
         @mouseover="item.show = true"
         @mouseout="item.show = false"
       >
@@ -28,8 +27,12 @@
           class="iconfont done animated fadeIn"
           @click="item.done = false"
         >&#xe660;</span>
-        <span v-else class="iconfont undone" @click="item.done = true">&#xe660;</span>
-        {{item.todo}}
+        <span
+          v-else-if="item.show && !item.done"
+          class="iconfont undone"
+          @click="item.done = true"
+        >&#xe660;</span>
+        <span class="content">{{item.todo}}</span>
         <span class="iconfont close" v-show="item.show" @click="todoDel">&#xe731;</span>
       </div>
       </transition-group>
@@ -73,9 +76,7 @@ export default {
         localStorage.setItem('todos', todoStr)
       }
       if (this.todos.length >= 10) {
-        //let el = '#todo-' + (this.todos.length % 10)
         this.scroll.refresh()
-        //this.scroll.scrollToElement(el, 500)
       }
     }
   },
@@ -91,10 +92,6 @@ export default {
     if (localStorage.getItem('todos')) {
       let todoList = localStorage.getItem('todos')
       this.todos = JSON.parse(todoList)
-      // if (this.todos.length >= 10) {
-      //   let el = '#todo-' + (this.todos.length % 10)
-      //   this.scroll.scrollToElement(el, 500)
-      // }
     }
   }
 }
@@ -130,8 +127,9 @@ export default {
       .todo-content
         position relative
         width 96.5%
+        height 3.5rem
         line-height 3.5rem
-        padding 0 1rem
+        padding 0 .8rem
         font-size 2rem
         text-align left
         color #515a6e
@@ -144,6 +142,10 @@ export default {
           cursor pointer
           font-size 1.6rem
           color rgb(179, 179, 179)
+        .content
+          position absolute
+          top 0
+          left 3rem
         .close
           cursor pointer
           position absolute
