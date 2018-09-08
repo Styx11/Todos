@@ -37,10 +37,11 @@
       </div>
       </transition-group>
     </div>
-    <div class="todo-footer">
+    <div class="todo-footer" v-if="todos.length">
       <span class="todo-left">
         <span class="left">{{ todoItems }}</span> item(s) left
       </span>
+      <span class="todo-clear" @click="todoClear">Clear Completed</span>
     </div>
   </div>
 </template>
@@ -68,6 +69,17 @@ export default {
       this.id = 1
       this.todos.forEach((item) => {
         if (!item.show) {
+          item.id = this.id++
+          todoList.push(item)
+        }
+      })
+      this.todos = todoList
+    },
+    todoClear: function () {
+      let todoList = []
+      this.id = 1
+      this.todos.forEach((item) => {
+        if (!item.done) {
           item.id = this.id++
           todoList.push(item)
         }
@@ -184,4 +196,9 @@ export default {
         left 1rem
         .left
           color #515a6e
+      .todo-clear
+        cursor pointer
+        position absolute
+        top .8rem
+        right 1rem
 </style>
