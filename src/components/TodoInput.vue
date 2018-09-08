@@ -16,8 +16,8 @@
         leave-active-class="animated fadeOutUp"
       >
       <div
-        v-for="(item, index) in todos"
-        :key="index"
+        v-for="item in todos"
+        :key="item.id"
         class="todo-content"
         @mouseover="item.show = true"
         @mouseout="item.show = false"
@@ -28,7 +28,7 @@
           @click="item.done = false"
         >&#xe660;</span>
         <span
-          v-else-if="item.show && !item.done"
+          v-if="item.show && !item.done"
           class="iconfont undone"
           @click="item.done = true"
         >&#xe660;</span>
@@ -61,8 +61,10 @@ export default {
     },
     todoDel: function () {
       let todoList = []
-      this.todos.forEach(function (item) {
+      this.id = 1
+      this.todos.forEach((item) => {
         if (!item.show) {
+          item.id = this.id++
           todoList.push(item)
         }
       })
