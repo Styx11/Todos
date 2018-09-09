@@ -1,18 +1,18 @@
 <template>
   <div id="app">
     <back-ground></back-ground>
-    <todo-input></todo-input>
+    <todo></todo>
   </div>
 </template>
 
 <script>
 import BackGround from './components/BackGround.vue'
-import TodoInput from './components/TodoInput.vue'
+import Todo from './components/Todo.vue'
 export default {
   name: 'App',
   components: {
     BackGround: BackGround,
-    TodoInput: TodoInput
+    Todo: Todo
   }
 }
 </script>

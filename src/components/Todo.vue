@@ -16,7 +16,7 @@
         leave-active-class="animated fadeOutUp"
       >
       <div
-        v-for="item in todos"
+        v-for="item in todosShow"
         v-bind:key="item.id"
         class="todo-content"
         v-on:mouseover="item.show = true"
@@ -32,16 +32,21 @@
           class="iconfont undone"
           v-on:click="item.done = true"
         >&#xe660;</span>
-        <span class="content">{{item.todo}}</span>
+        <span class="content" :class="{'todoDone': item.done}">{{item.todo}}</span>
         <span class="iconfont close" v-show="item.show" v-on:click="todoDel">&#xe731;</span>
       </div>
       </transition-group>
     </div>
     <div class="todo-footer" v-if="todos.length">
       <span class="todo-left">
-        <span class="left">{{ todoItems }}</span> item(s) left
+        <span class="left">{{ todos.length - todoItems }}</span> item(s) left
       </span>
-      <span class="todo-clear" @click="todoClear">Clear Completed</span>
+      <div class="todo-center">
+        <span class="todo-btn" @click="todosShow = todos">All</span>
+        <span class="todo-btn" @click="todosShow = todosAct">Active</span>
+        <span class="todo-btn" @click="todosShow = todosDone">Completed</span>
+      </div>
+      <span class="todo-clear" @click="todoClear" v-show="todoItems">Clear Completed</span>
     </div>
   </div>
 </template>
@@ -50,11 +55,17 @@
 import BScroll from 'better-scroll'
 export default {
   name: 'TodoInput',
+  props: {
+    todoList: {
+      type: 'Array'
+    }
+  },
   data: function () {
     return {
       id: 1,
       todo: '',
-      todos: []
+      todos: [],
+      todosShow: []
     }
   },
   methods: {
@@ -89,10 +100,6 @@ export default {
   },
   watch: {
     todos: function () {
-      if (localStorage) {
-        let todoStr = JSON.stringify(this.todos)
-        localStorage.setItem('todos', todoStr)
-      }
       if (this.todos.length >= 9) {
         this.scroll.refresh()
       }
@@ -102,11 +109,29 @@ export default {
     todoItems: function () {
       let items = 0
       this.todos.forEach(function (item) {
-        if (!item.done) {
+        if (item.done) {
           items++
         }
       })
       return items
+    },
+    todosAct: function () {
+      let todos = []
+      this.todos.forEach((item) => {
+        if (!item.done) {
+          todos.push(item)
+        }
+      })
+      return todos
+    },
+    todosDone: function () {
+      let todos = []
+      this.todos.forEach((item) => {
+        if (item.done) {
+          todos.push(item)
+        }
+      })
+      return todos
     }
   },
   mounted: function () {
@@ -114,6 +139,13 @@ export default {
     if (localStorage.getItem('todos')) {
       let todoList = localStorage.getItem('todos')
       this.todos = JSON.parse(todoList)
+    }
+    this.todosShow = this.todos
+  },
+  beforeDestroy: function () {
+    if (localStorage) {
+      let todoStr = JSON.stringify(this.todos)
+      localStorage.setItem('todos', todoStr)
     }
   }
 }
@@ -137,7 +169,7 @@ export default {
       padding 0 1rem
       font-size 2rem
       color #515a6e
-      box-shadow:4px 4px 10px #ccc
+      box-shadow:0px 4px 8px #ccc
       border 0px solid #fff
       border-bottom 1px solid #ccc
       border-radius .3rem
@@ -169,6 +201,9 @@ export default {
           position absolute
           top 0
           left 3rem
+        .todoDone
+          text-decoration line-through
+          color rgb(179, 179, 179)
         .close
           cursor pointer
           position absolute
@@ -186,7 +221,7 @@ export default {
       position relative
       background-color #fff
       color rgb(179, 179, 179)
-      box-shadow:4px 4px 10px #ccc
+      box-shadow:0px 4px 8px #ccc
       border-bottom-left-radius .3rem
       border-bottom-right-radius .3rem
       border-top 1px solid rgb(179, 179, 179)
@@ -196,6 +231,14 @@ export default {
         left 1rem
         .left
           color #515a6e
+      .todo-center
+        position relative
+        top .8rem
+        margin 0 auto
+        text-align center
+        color rgb(179, 179, 179)
+        .todo-btn
+          cursor pointer
       .todo-clear
         cursor pointer
         position absolute
