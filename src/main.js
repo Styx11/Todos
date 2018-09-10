@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import fastclick from 'fastclick'
 
+import 'babel-polyfill'
 import 'animate.css'
 import '@/assets/styles/iconfont.css'
 import '@/assets/styles/border.css'
