@@ -7,7 +7,7 @@
       v-on:keyup.enter="addTodo"
       placeholder="What needs to be done?"
     >
-    <div class="todo">
+    <div class="todo" v-if="todosShow === 'todos'">
       <transition-group
         tag="div"
         class="content"
@@ -16,7 +16,7 @@
         leave-active-class="animated fadeOutUp"
       >
       <div
-        v-for="item in todosShow"
+        v-for="item in todos"
         v-bind:key="item.id"
         class="todo-content"
         v-on:mouseover="item.show = true"
@@ -37,16 +37,61 @@
       </div>
       </transition-group>
     </div>
+    <div class="todo" v-else-if="todosShow === 'todosAct'">
+      <transition-group
+        tag="div"
+        class="content"
+        name="custom-classes-transition"
+        enter-active-class="animated fadeInDown"
+        leave-active-class="animated fadeOutUp"
+      >
+        <div
+        v-for="item in todosAct"
+        v-bind:key="item.id"
+        class="todo-content"
+      >
+        <span
+          class="iconfont undone animated fadeIn"
+        >&#xe660;</span>
+        <span class="content" :class="{'todoDone': item.done}">{{item.todo}}</span>
+      </div>
+      </transition-group>
+    </div>
+    <div class="todo" v-else-if="todosShow === 'todosDone'">
+      <transition-group
+        tag="div"
+        class="content"
+        name="custom-classes-transition"
+        enter-active-class="animated fadeInDown"
+        leave-active-class="animated fadeOutUp"
+      >
+        <div
+        v-for="item in todosDone"
+        v-bind:key="item.id"
+        class="todo-content"
+        >
+          <span
+            class="iconfont done animated fadeIn"
+          >&#xe660;</span>
+          <span class="content" :class="{'todoDone': item.done}">{{item.todo}}</span>
+        </div>
+      </transition-group>
+    </div>
+    <div class="todo"></div>
     <div class="todo-footer" v-if="todos.length">
       <span class="todo-left">
         <span class="left">{{ todos.length - todoItems }}</span> item(s) left
       </span>
       <div class="todo-center">
-        <span class="todo-btn" @click="todosShow = todos">All</span>
-        <span class="todo-btn" @click="todosShow = todosAct">Active</span>
-        <span class="todo-btn" @click="todosShow = todosDone">Completed</span>
+        <span class="todo-btn" @click="todosShow = 'todos'">All</span>
+        <span class="todo-btn" @click="todosShow = 'todosAct'">Active</span>
+        <span class="todo-btn" @click="todosShow = 'todosDone'">Completed</span>
       </div>
-      <span class="todo-clear" @click="todoClear" v-show="todoItems">Clear Completed</span>
+      <span
+        class="todo-clear"
+        @click="todoClear"
+        v-show="todoItems && todosShow === 'todos'"
+      >Clear Completed</span>
     </div>
   </div>
 </template>
@@ -55,17 +100,12 @@
 import BScroll from 'better-scroll'
 export default {
   name: 'TodoInput',
-  props: {
-    todoList: {
-      type: 'Array'
-    }
-  },
   data: function () {
     return {
       id: 1,
       todo: '',
       todos: [],
-      todosShow: []
+      todosShow: 'todos'
     }
   },
   methods: {
@@ -140,7 +180,6 @@ export default {
       let todoList = localStorage.getItem('todos')
       this.todos = JSON.parse(todoList)
     }
-    this.todosShow = this.todos
   },
   beforeDestroy: function () {
     if (localStorage) {
