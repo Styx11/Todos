@@ -143,6 +143,10 @@ export default {
       if (this.todos.length >= 9) {
         this.scroll.refresh()
       }
+      if (localStorage) {
+        let todoStr = JSON.stringify(this.todos)
+        localStorage.setItem('todos', todoStr)
+      }
     }
   },
   computed: {
@@ -179,12 +183,6 @@ export default {
     if (localStorage.getItem('todos')) {
       let todoList = localStorage.getItem('todos')
       this.todos = JSON.parse(todoList)
-    }
-  },
-  beforeDestroy: function () {
-    if (localStorage) {
-      let todoStr = JSON.stringify(this.todos)
-      localStorage.setItem('todos', todoStr)
     }
   }
 }
