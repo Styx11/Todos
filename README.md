@@ -1,6 +1,10 @@
 # todos
 
-> A Vue.js project
+> 一个Todos应用
+
+这是一个使用Vue.js编写的Todos应用，背景采用了Bing每日壁纸，其中还包括localStorage相关API的使用
+
+![](./src/assets/todo.gif)
 
 ## Build Setup
 
