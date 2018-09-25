@@ -37,7 +37,7 @@
       </div>
       </transition-group>
     </div>
-    <div class="todo" v-else-if="todosShow === 'todosAct'">
+    <div class="todo" v-else>
       <transition-group
         tag="div"
         class="content"
@@ -46,32 +46,17 @@
         leave-active-class="animated fadeOutUp"
       >
         <div
-        v-for="item in todosAct"
-        v-bind:key="item.id"
-        class="todo-content"
-      >
-        <span
-          class="iconfont undone animated fadeIn"
-        >&#xe660;</span>
-        <span class="content" :class="{'todoDone': item.done}">{{item.todo}}</span>
-      </div>
-      </transition-group>
-    </div>
-    <div class="todo" v-else-if="todosShow === 'todosDone'">
-      <transition-group
-        tag="div"
-        class="content"
-        name="custom-classes-transition"
-        enter-active-class="animated fadeInDown"
-        leave-active-class="animated fadeOutUp"
-      >
-        <div
-        v-for="item in todosDone"
+        v-for="item in todoShow"
         v-bind:key="item.id"
         class="todo-content"
         >
           <span
+            v-if="todosShow === 'todosDone'"
             class="iconfont done animated fadeIn"
+          >&#xe660;</span>
+          <span
+            v-else
+            class="iconfont undone animated fadeIn"
           >&#xe660;</span>
           <span class="content" :class="{'todoDone': item.done}">{{item.todo}}</span>
         </div>
@@ -176,6 +161,11 @@ export default {
         }
       })
       return todos
+    },
+    todoShow: function () {
+      if (this.todosShow !== 'todos') {
+        return this[this.todosShow]
+      }
     }
   },
   mounted: function () {
